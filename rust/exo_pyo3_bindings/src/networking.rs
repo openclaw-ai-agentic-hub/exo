@@ -159,6 +159,19 @@ async fn networking_task(
     use networking::swarm::BehaviourEvent::*;
 
     log::info!("RUST: networking task started");
+    if let Ok(peers) = std::env::var("EXO_STATIC_PEERS") {
+        for addr_str in peers.split(",").map(str::trim).filter(|s| !s.is_empty()) {
+            match addr_str.parse::<libp2p::Multiaddr>() {
+                Ok(addr) => {
+                    log::info!("RUST: dialing static peer: {addr}");
+                    if let Err(e) = swarm.dial(addr.clone()) {
+                        log::error!("RUST: failed to dial {addr}: {e}");
+                    }
+                }
+                Err(e) => log::error!("RUST: bad static peer addr: {e}"),
+            }
+        }
+    }
 
     loop {
         tokio::select! {

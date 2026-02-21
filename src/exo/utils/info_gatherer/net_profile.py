@@ -117,6 +117,8 @@ async def check_reachable(
             if node_id == self_node_id:
                 continue
             for iface in node_network[node_id].interfaces:
+                if iface.ip_address.startswith("127.") or iface.ip_address == "::1":
+                    continue
                 tg.start_soon(_probe, iface.ip_address, node_id, client, send.clone())
         send.close()
 

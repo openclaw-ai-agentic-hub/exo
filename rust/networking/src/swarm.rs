@@ -24,7 +24,9 @@ pub fn create_swarm(keypair: identity::Keypair) -> alias::AnyResult<Swarm> {
         .build();
 
     // Listen on all interfaces and whatever port the OS assigns
-    swarm.listen_on("/ip4/0.0.0.0/tcp/0".parse()?)?;
+    let port = std::env::var("EXO_LIBP2P_PORT").unwrap_or_else(|_| "0".to_string());
+    let addr = format!("/ip4/0.0.0.0/tcp/{port}");
+    swarm.listen_on(addr.parse()?)?;
     Ok(swarm)
 }
 
