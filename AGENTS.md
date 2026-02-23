@@ -15,9 +15,18 @@ Distributed ML inference cluster running Llama 3.3 70B across two Apple Silicon 
 - `src/exo/utils/info_gatherer/net_profile.py` — loopback interface filter (prevents self-dial)
 - Launch scripts: `start_exo.sh` on each machine
 
+## SSH Access
+- **Studio:** `ssh aistudio1@100.107.179.94`
+- **Mini:** `ssh aihub@100.99.164.42`
+
+## LaunchDaemons (Auto-Start)
+Both machines run exo via LaunchDaemons with `KeepAlive` and `RunAtLoad` enabled:
+- **Mini (Worker):** `ai.exo.worker` — `/Library/LaunchDaemons/ai.exo.worker.plist`
+- **Studio (Master):** `ai.exo.master` — `/Library/LaunchDaemons/ai.exo.master.plist`
+
 ## Key Commands
-- Start Studio: `ssh aihub@100.107.179.94 'bash ~/exo/start_exo.sh'`
-- Start Mini: `ssh aihub@100.99.164.42 'bash ~/exo/start_exo.sh'`
+- Restart Mini: `sudo launchctl bootout system/ai.exo.worker && sudo launchctl bootstrap system /Library/LaunchDaemons/ai.exo.worker.plist`
+- Restart Studio: `sudo launchctl bootout system/ai.exo.master && sudo launchctl bootstrap system /Library/LaunchDaemons/ai.exo.master.plist`
 - Test API: `curl http://100.107.179.94:52415/v1/models`
 
 ## Development Notes
