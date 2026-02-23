@@ -29,6 +29,11 @@ Both machines run exo via LaunchDaemons with `KeepAlive` and `RunAtLoad` enabled
 - Restart Studio: `sudo launchctl bootout system/ai.exo.master && sudo launchctl bootstrap system /Library/LaunchDaemons/ai.exo.master.plist`
 - Test API: `curl http://100.107.179.94:52415/v1/models`
 
+## Current Status
+Exo cluster is running as LaunchDaemons but **parked as a future upgrade path** — standalone Ollama on the Studio handles current workloads fine.
+- **Ollama tunnel:** Port 11434 forwards to standalone Ollama on Studio for local inference
+- **Confirmed working:** `llama3.1:8b` and `llama3.1:70b` via standalone Ollama
+
 ## Development Notes
 - Base branch for PRs: `main`
 - Our working branch: `openclaw`
