@@ -16,9 +16,9 @@ Distributed ML inference cluster running Llama 3.3 70B across two Apple Silicon 
 - Launch scripts: `start_exo.sh` on each machine
 
 ## SSH Access
-- **Studio:** `ssh studio` (alias configured in `~/.ssh/config`)
-  - Account: `aistudio1@100.107.179.94`
-  - Key: `~/.ssh/id_studio` (Ed25519, dedicated key for openclaw-agent)
+- **Studio:** `ssh aistudio1@100.107.179.94`
+  - Key: `~/.ssh/id_studio` (Ed25519, dedicated for openclaw-agent)
+  - SSH config matches on `Host 100.107.179.94` so the key is used automatically
   - Used for cluster diagnostics and Ollama management
   - Ollama full path: `/opt/homebrew/bin/ollama`
 - **Mini:** `ssh aihub@100.99.164.42`
@@ -41,14 +41,24 @@ Exo cluster is running as LaunchDaemons but **parked as a future upgrade path** 
 
 ## Cedar Authorization Rules (37+ custom rules)
 Policy enforcement via Cedar for agent tool usage:
+
+### SSH to Studio
 - **permit-ssh-studio-readonly** — allows `ps`, `vm_stat`, `top`, `df`, `uptime`, `tail` (logs), `curl` on Studio
 - **permit-ssh-studio-ollama** — allows `ollama list`, `ollama ps`, `ollama pull`, `ollama stop`, `ollama run` on Studio
 - **forbid-ssh-studio-destructive** — blocks `rm`, `kill`, `sudo`, `brew`, `pip`, `launchctl`, `chmod`, `chown`, etc. on Studio
-- **Obsidian vault permits** — Cedar rules for Obsidian vault file access
-- **Web search** — enabled via Brave API key in gateway LaunchDaemon env vars
+
+### Web Search
+- **permit-web-search** — allows web search via Brave API
+- **permit-web-fetch** — allows web content fetching
+- Brave API key configured in gateway LaunchDaemon env vars
+
+### Obsidian Vault
+- **permit-obsidian-write** — allows writing new files to vault
+- **permit-obsidian-edit** — allows editing existing vault files
+- **permit-obsidian-mkdir** — allows creating directories in vault
 
 ## Sondera Integration
-- Path normalization fix applied in `index.ts`
+- Path normalization fix in `extensions/sondera/index.ts` — `params.path` copied to `params.file_path` before Cedar evaluation
 
 ## Development Notes
 - Base branch for PRs: `main`
