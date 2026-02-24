@@ -17,8 +17,10 @@ Distributed ML inference cluster running Llama 3.3 70B across two Apple Silicon 
 
 ## SSH Access
 - **Studio:** `ssh studio` (alias configured in `~/.ssh/config`)
-  - Account: `openclaw-agent@100.107.179.94`
-  - Key: `~/.ssh/id_studio` (Ed25519, dedicated key)
+  - Account: `aistudio1@100.107.179.94`
+  - Key: `~/.ssh/id_studio` (Ed25519, dedicated key for openclaw-agent)
+  - Used for cluster diagnostics and Ollama management
+  - Ollama full path: `/opt/homebrew/bin/ollama`
 - **Mini:** `ssh aihub@100.99.164.42`
 
 ## LaunchDaemons (Auto-Start)
