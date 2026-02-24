@@ -16,7 +16,9 @@ Distributed ML inference cluster running Llama 3.3 70B across two Apple Silicon 
 - Launch scripts: `start_exo.sh` on each machine
 
 ## SSH Access
-- **Studio:** `ssh aistudio1@100.107.179.94`
+- **Studio:** `ssh studio` (alias configured in `~/.ssh/config`)
+  - Account: `openclaw-agent@100.107.179.94`
+  - Key: `~/.ssh/id_studio` (Ed25519, dedicated key)
 - **Mini:** `ssh aihub@100.99.164.42`
 
 ## LaunchDaemons (Auto-Start)
@@ -32,7 +34,19 @@ Both machines run exo via LaunchDaemons with `KeepAlive` and `RunAtLoad` enabled
 ## Current Status
 Exo cluster is running as LaunchDaemons but **parked as a future upgrade path** — standalone Ollama on the Studio handles current workloads fine.
 - **Ollama tunnel:** Port 11434 forwards to standalone Ollama on Studio for local inference
+- **Ollama path on Studio:** `/opt/homebrew/bin/ollama` (full path required)
 - **Confirmed working:** `llama3.1:8b` and `llama3.1:70b` via standalone Ollama
+
+## Cedar Authorization Rules (37+ custom rules)
+Policy enforcement via Cedar for agent tool usage:
+- **permit-ssh-studio-readonly** — allows `ps`, `vm_stat`, `top`, `df`, `uptime`, `tail` (logs), `curl` on Studio
+- **permit-ssh-studio-ollama** — allows `ollama list`, `ollama ps`, `ollama pull`, `ollama stop`, `ollama run` on Studio
+- **forbid-ssh-studio-destructive** — blocks `rm`, `kill`, `sudo`, `brew`, `pip`, `launchctl`, `chmod`, `chown`, etc. on Studio
+- **Obsidian vault permits** — Cedar rules for Obsidian vault file access
+- **Web search** — enabled via Brave API key in gateway LaunchDaemon env vars
+
+## Sondera Integration
+- Path normalization fix applied in `index.ts`
 
 ## Development Notes
 - Base branch for PRs: `main`
